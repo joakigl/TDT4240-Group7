@@ -1,0 +1,4 @@
+bruk libgdx sin prosjektgenerator med com.mygdx.game (standard)
+
+putt assets sammen med android sin assets-mappe
+put src sammen med core sin src-mappe
