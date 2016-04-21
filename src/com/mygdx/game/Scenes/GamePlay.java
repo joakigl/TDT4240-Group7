@@ -3,14 +3,9 @@ package com.mygdx.game.Scenes;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 /**
- * Created by Andreas on 16.04.2016.
+ * Created by Andreas on 20.04.2016.
  */
-public class MainMenu extends Scene {
-
-    public MainMenu(){
-
-    }
-
+public class GamePlay extends Scene {
     @Override
     public void render(SpriteBatch batch) {
 
