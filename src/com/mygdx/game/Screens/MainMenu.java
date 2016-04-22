@@ -30,6 +30,8 @@ public class MainMenu implements Screen {
 
         background = Res.menuBackground;
 
+        Gdx.input.setCatchBackKey(false);
+
         playButton = new Button((game.gameWidth/2)-Res.playButton.getWidth()/2,(game.gameHeight/2)-Res.playButton.getHeight()/2,Res.playButton);
         optionsButton = new Button(playButton.getX()+10+Res.optionsButton.getWidth(),(game.gameHeight/2)-Res.optionsButton.getHeight()/2,Res.optionsButton);
     }
@@ -86,8 +88,6 @@ public class MainMenu implements Screen {
 
     @Override
     public void dispose() {
-        background.dispose();
-        playButton.dispose();
-        optionsButton.dispose();
+
     }
 }

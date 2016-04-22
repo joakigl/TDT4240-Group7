@@ -7,6 +7,8 @@ package com.mygdx.game;
 
 public class MyGdxGame extends Game {
 
+    public boolean debug;
+
     public OrthographicCamera camera;
     public SpriteBatch batch;
 
@@ -27,5 +29,13 @@ public class MyGdxGame extends Game {
     @Override
     public void dispose(){
         batch.dispose();
+        Res.menuBackground.dispose();
+        Res.playButton.dispose();
+        Res.optionsButton.dispose();
+        Res.gameplayBackground.dispose();
+        Res.exitButton.dispose();
+        Res.puck.dispose();
+        Res.pusherP1.dispose();
+        Res.pusherP2.dispose();
     }
 }

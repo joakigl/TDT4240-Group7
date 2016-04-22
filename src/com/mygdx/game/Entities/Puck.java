@@ -12,6 +12,9 @@ public class Puck extends MovableEntity {
     public Puck(int x, int y, Texture texture, double mx, double my) {
         super(x, y, texture, mx, my);
     }
+    public Puck(int x, int y, Texture texture) {
+        super(x, y, texture);
+    }
 
     @Override
     public void render(Graphics g) {
