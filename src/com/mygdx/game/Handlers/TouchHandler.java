@@ -29,7 +29,8 @@ public class TouchHandler implements InputProcessor {
             game.camera.unproject(point1.set(screenX,screenY, 0));
             dragging1 = true;
             return true;
-        }else if(pointer == 1) {
+        }
+        if(pointer == 1) {
             game.camera.unproject(point2.set(screenX, screenY, 0));
             dragging2 = true;
             return true;
@@ -38,10 +39,11 @@ public class TouchHandler implements InputProcessor {
     }
 
     @Override public boolean touchDragged (int screenX, int screenY, int pointer) {
-        if(dragging1 == true){
+        if(pointer == 0){
             game.camera.unproject(point1.set(screenX,screenY, 0));
             return true;
-        }else if(dragging2 == true) {
+        }
+        if(pointer == 1) {
             game.camera.unproject(point2.set(screenX, screenY, 0));
             return true;
         }
@@ -53,7 +55,8 @@ public class TouchHandler implements InputProcessor {
             game.camera.unproject(point1.set(screenX,screenY, 0));
             dragging1 = false;
             return false;
-        }else if(pointer == 1) {
+        }
+        if(pointer == 1) {
             game.camera.unproject(point2.set(screenX, screenY, 0));
             dragging2 = false;
             return false;
