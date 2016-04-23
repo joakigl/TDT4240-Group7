@@ -67,7 +67,6 @@ public class GameScreen implements Screen {
         p2.createBox2DBody(world);
         puck = new Puck(game, game.gameWidth/2-(Res.puck.getWidth()/2),game.gameHeight/2-(Res.puck.getHeight()/2),Res.puck);
         puck.createBox2DBody(world);
-        puck.setVel(0.1,0);
         topWall = new Wall(game,20,game.gameHeight-Res.longsideWall.getHeight(),Res.longsideWall);
         topWall.createBox2DBody(world);
         botWall = new Wall(game,20,0,Res.longsideWall);
@@ -141,22 +140,32 @@ public class GameScreen implements Screen {
                 }
                 break;
             case 1: //gameplay
+
                 if(Gdx.input.isKeyJustPressed(Input.Keys.BACK)){
                     gameState = 3;
                 }
+
+                p1.pBody.setLinearVelocity(new Vector2(0,0));
+                p2.pBody.setLinearVelocity(new Vector2(0,0));
 
                 for(int i = 0;i<2;i++) {
                     if(!Gdx.input.isTouched(i)) continue;
                     Vector3 touchPos = new Vector3();
                     touchPos.set(Gdx.input.getX(i), Gdx.input.getY(i), 0);
                     camera.unproject(touchPos);
+                    Vector2 direction = new Vector2(touchPos.x, touchPos.y);
                     if(touchPos.x < game.gameWidth/2){
-                        p1.setPrevPos(p1.getX(),p1.getY());
-                        p1.setPosition(touchPos.x-(p1.getTexture().getWidth()/2),touchPos.y-(p1.getTexture().getHeight()/2));
+                        // calculte the normalized direction from the body to the touch position
+                        direction.sub(new Vector2(p1.pBody.getPosition().x*game.PPM,p1.pBody.getPosition().y*game.PPM));
+                        direction.nor();
+                        float speed = 10;
+                        p1.pBody.setLinearVelocity(direction.scl(speed));
                     }
                     if(touchPos.x > game.gameWidth/2){
-                        p2.setPrevPos(p2.getX(),p2.getY());
-                        p2.setPosition(touchPos.x-(p2.getTexture().getWidth()/2),touchPos.y-(p2.getTexture().getHeight()/2));
+                        direction.sub(new Vector2(p2.pBody.getPosition().x*game.PPM,p2.pBody.getPosition().y*game.PPM));
+                        direction.nor();
+                        float speed = 10;
+                        p2.pBody.setLinearVelocity(direction.scl(speed));
                     }
                 }
 

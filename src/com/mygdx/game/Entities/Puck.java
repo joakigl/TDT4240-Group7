@@ -42,7 +42,7 @@ public class Puck extends MovableEntity {
 
     @Override
     public void render(SpriteBatch batch) {
-        batch.draw(texture,x,y);
+        batch.draw(texture,(pBody.getPosition().x*game.PPM)-texture.getWidth()/2,(pBody.getPosition().y*game.PPM)-texture.getHeight()/2);
     }
 
     @Override

@@ -43,7 +43,7 @@ public class Pusher extends MovableEntity {
 
     @Override
     public void render(SpriteBatch batch) {
-        batch.draw(texture,x,y);
+        batch.draw(texture,(pBody.getPosition().x*game.PPM)-texture.getWidth()/2,(pBody.getPosition().y*game.PPM)-texture.getHeight()/2);
     }
 
     @Override
@@ -57,6 +57,7 @@ public class Pusher extends MovableEntity {
 
     public void setPrevPos(float x, float y){
         prevPos.set(x,y);
+        pBody.setTransform(x/game.PPM,y/game.PPM,0);
     }
 
     public int getPrevX(){
