@@ -25,7 +25,7 @@ public class Res {
     static public Texture longsideWall = new Texture(Gdx.files.internal("side-wall.png"));
     static public Texture shortsideWall = new Texture(Gdx.files.internal("shortside-wall.png"));
     static public Texture noPointIndicator= new Texture(Gdx.files.internal("nopoint-indicator.png"));
-    static public Texture coundownIndicator = new Texture(Gdx.files.internal("countdown-indicator.png"));
+    static public Texture countdownIndicator = new Texture(Gdx.files.internal("countdown-indicator.png"));
     static public Texture goIndicator = new Texture(Gdx.files.internal("go-indicator.png"));
     static public Texture p1PointIndicator = new Texture(Gdx.files.internal("redpoint-indicator.png"));
     static public Texture p2PointIndicator = new Texture(Gdx.files.internal("bluepoint-indicator.png"));

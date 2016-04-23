@@ -15,6 +15,8 @@ public class MyGdxGame extends Game {
     public int gameWidth = 1280;
     public int gameHeight = 720;
 
+    public float PPM = 128f;
+
     @Override
     public void create () {
         batch = new SpriteBatch();
@@ -40,7 +42,7 @@ public class MyGdxGame extends Game {
         Res.longsideWall.dispose();
         Res.shortsideWall.dispose();
         Res.noPointIndicator.dispose();
-        Res.coundownIndicator.dispose();
+        Res.countdownIndicator.dispose();
         Res.goIndicator.dispose();
         Res.p1PointIndicator.dispose();
         Res.p2PointIndicator.dispose();
