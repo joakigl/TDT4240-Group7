@@ -19,4 +19,9 @@ public abstract class MovableEntity extends Entity {
         this.mx = mx;
         this.my = my;
     }
+
+    public void setVel(double mx, double my){
+        this.mx = mx;
+        this.my = my;
+    }
 }

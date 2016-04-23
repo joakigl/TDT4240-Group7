@@ -8,8 +8,8 @@ import com.badlogic.gdx.graphics.Texture;
  */
 public abstract class Entity {
 
-    protected int x;
-    protected int y;
+    protected double x;
+    protected double y;
     protected Texture texture;
 
     public Entity(int x, int y, Texture texture){
@@ -18,12 +18,22 @@ public abstract class Entity {
         this.texture = texture;
     }
 
+    public void setPosition(float x, float y){
+        this.x = (int)x;
+        this.y = (int)y;
+    }
+
+    public void setPosition(int x, int y){
+        this.x = x;
+        this.y = y;
+    }
+
     public int getX(){
-        return x;
+        return (int)x;
     }
 
     public int getY(){
-        return y;
+        return (int)y;
     }
 
     public Texture getTexture(){

@@ -24,8 +24,8 @@ public class Button extends Entity {
 
     @Override
     public void update() {
-        boundingBox.x = x;
-        boundingBox.y = y;
+        boundingBox.x = (int)x;
+        boundingBox.y = (int)y;
     }
 
     public boolean pointOnButton(Vector3 point1){

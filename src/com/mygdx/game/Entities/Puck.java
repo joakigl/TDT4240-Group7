@@ -23,6 +23,7 @@ public class Puck extends MovableEntity {
 
     @Override
     public void update() {
-
+        x += mx;
+        y += my;
     }
 }

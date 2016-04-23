@@ -37,5 +37,12 @@ public class MyGdxGame extends Game {
         Res.puck.dispose();
         Res.pusherP1.dispose();
         Res.pusherP2.dispose();
+        Res.longsideWall.dispose();
+        Res.shortsideWall.dispose();
+        Res.noPointIndicator.dispose();
+        Res.coundownIndicator.dispose();
+        Res.goIndicator.dispose();
+        Res.p1PointIndicator.dispose();
+        Res.p2PointIndicator.dispose();
     }
 }
