@@ -7,8 +7,8 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.*;
+import com.mygdx.game.Entities.Button;
 import com.mygdx.game.Entities.Puck;
 import com.mygdx.game.Entities.Pusher;
 import com.mygdx.game.Entities.Wall;
@@ -35,12 +35,10 @@ public class GameScreen implements Screen {
     private Puck puck;
     private Wall topWall,botWall,leftTopWall,leftBotWall,rightTopWall,rightBotWall;
 
-    /* Unused variables for now.
-    private boolean point1drag = false;
-    private boolean point2drag = false;
-    private int point1target = 0; //0 is no target
-    private int point2target = 0; //0 is no target
-    */
+    private Button resumeButton;
+    private Button mainmenuButton;
+
+
     //misc, for countdown, winnerscreen, etc
     int time;
     int countdown;
@@ -50,7 +48,7 @@ public class GameScreen implements Screen {
 
         //gamesize and misc
         camera = new OrthographicCamera();
-        camera.setToOrtho(true, 1280,720);
+        camera.setToOrtho(false, 1280,720);
         Gdx.input.setCatchBackKey(true);
 
         //gameplay background
@@ -67,6 +65,12 @@ public class GameScreen implements Screen {
         p2.createBox2DBody(world);
         puck = new Puck(game, game.gameWidth/2-(Res.puck.getWidth()/2),game.gameHeight/2-(Res.puck.getHeight()/2),Res.puck);
         puck.createBox2DBody(world);
+        int direction = (int)Math.random();
+        if(direction == 0) {
+            puck.pBody.setLinearVelocity(-0.8f, 0);
+        }else{
+            puck.pBody.setLinearVelocity(0.8f,0);
+        }
         topWall = new Wall(game,20,game.gameHeight-Res.longsideWall.getHeight(),Res.longsideWall);
         topWall.createBox2DBody(world);
         botWall = new Wall(game,20,0,Res.longsideWall);
@@ -80,6 +84,9 @@ public class GameScreen implements Screen {
         rightBotWall = new Wall(game,game.gameWidth-Res.shortsideWall.getWidth(),0,Res.shortsideWall);
         rightBotWall.createBox2DBody(world);
 
+        //init buttons for pause
+        resumeButton = new Button((game.gameWidth/2)-Res.resumeButton.getWidth()/2,(game.gameHeight/2)-Res.resumeButton.getHeight()/2,Res.resumeButton);
+        mainmenuButton = new Button(resumeButton.getX()+10+Res.mainmenuButton.getWidth(),(game.gameHeight/2)-Res.mainmenuButton.getHeight()/2,Res.mainmenuButton);
 
         //init scores
         Res.p1score = 0;
@@ -114,15 +121,15 @@ public class GameScreen implements Screen {
                 puck.render(game.batch);
                 break;
             case 2: //winner
+                drawWinnerIndicators();
                 break;
             case 3: //pause
+                game.batch.draw(Res.pausedBackground,0,0);
+                game.batch.draw(resumeButton.getTexture(),resumeButton.getX(),resumeButton.getY());
+                game.batch.draw(mainmenuButton.getTexture(),mainmenuButton.getX(),mainmenuButton.getY());
                 break;
         }
         game.batch.end();
-
-        world.step(1/60f, 6,2);
-
-        b2dr.render(world,camera.combined);
 
     }
 
@@ -136,12 +143,14 @@ public class GameScreen implements Screen {
                         time=60;
                     }else{
                         gameState = 1;
+                        time=60;
+                        countdown = 3;
                     }
                 }
                 break;
             case 1: //gameplay
 
-                if(Gdx.input.isKeyJustPressed(Input.Keys.BACK)){
+                if(Gdx.input.isKeyPressed(Input.Keys.BACK)){
                     gameState = 3;
                 }
 
@@ -168,19 +177,77 @@ public class GameScreen implements Screen {
                         p2.pBody.setLinearVelocity(direction.scl(speed));
                     }
                 }
-
-                puck.update();
-                break;
-            case 2: //winner
-                break;
-            case 3: //pause
-                if(Gdx.input.isKeyJustPressed(Input.Keys.BACK)){
-                    game.setScreen(new MainMenu(game));
-                    dispose();
+                if(puck.pBody.getPosition().x*game.PPM < -10){
+                    Res.p2score+=1;
+                    world.destroyBody(puck.pBody);
+                    puck = new Puck(game, game.gameWidth/2-(Res.puck.getWidth()/2),game.gameHeight/2-(Res.puck.getHeight()/2),Res.puck);
+                    puck.createBox2DBody(world);
+                    puck.pBody.setLinearVelocity(-0.8f, 0);
+                }else if(puck.pBody.getPosition().x*game.PPM > game.gameWidth+10){
+                    Res.p1score+=1;
+                    world.destroyBody(puck.pBody);
+                    puck = new Puck(game, game.gameWidth/2-(Res.puck.getWidth()/2),game.gameHeight/2-(Res.puck.getHeight()/2),Res.puck);
+                    puck.createBox2DBody(world);
+                    puck.pBody.setLinearVelocity(0.8f,0);
+                }
+                if(Res.p1score == 3 || Res.p2score == 3){
+                    gameState = 2;
                 }
 
+                world.setContactListener(
+                        new ContactListener() {
+                            @Override
+                            public void beginContact(Contact contact) {
+                                if(contact.getFixtureA().getBody() == puck.pBody || contact.getFixtureB().getBody() == puck.pBody){
+                                    //put audio here for puck collision sounds
+                                }
+                            }
+
+                            @Override
+                            public void endContact(Contact contact) {
+
+                            }
+
+                            @Override
+                            public void preSolve(Contact contact, Manifold oldManifold) {
+
+                            }
+
+                            @Override
+                            public void postSolve(Contact contact, ContactImpulse impulse) {
+
+                            }
+                        }
+                );
+
+                world.step(1/60f, 6,2);
+                break;
+            case 2: //winner
+                time--;
+                if(time==0){
+                    time = 60;
+                    if(countdown >1){
+                        countdown--;
+                    }
+                }
+                if(countdown<=1){
+                    if(Gdx.input.isTouched()){
+                        game.setScreen(new MainMenu(game));
+                        dispose();
+                    }
+                }
+                break;
+            case 3: //pause
                 if(Gdx.input.isTouched()){
-                    gameState = 1;
+                    Vector3 touchPos = new Vector3();
+                    touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
+                    camera.unproject(touchPos);
+                    if(resumeButton.pointOnButton(touchPos)){
+                        gameState = 1;
+                    }else if(mainmenuButton.pointOnButton(touchPos)){
+                        game.setScreen(new MainMenu(game));
+                        dispose();
+                    }
                 }
                 break;
         }
@@ -195,13 +262,39 @@ public class GameScreen implements Screen {
         rightBotWall.render(game.batch);
     }
 
+    public void drawWinnerIndicators(){
+        for(int i = 0;i<3;i++){
+            if(time>30) {
+                if (Res.p1score==3) {
+                    game.batch.draw(Res.p1PointIndicator, game.gameWidth / 2 - (Res.p1PointIndicator.getWidth() / 2), 60 + (i * 100));
+                }else if (Res.p2score==3) {
+                    game.batch.draw(Res.p2PointIndicator, game.gameWidth / 2 - (Res.p2PointIndicator.getWidth() / 2), 60 + (i * 100));
+                }
+            }else {
+                game.batch.draw(Res.noPointIndicator, game.gameWidth / 2 - (Res.noPointIndicator.getWidth() / 2), 60 + (i * 100));
+            }
+        }
+
+        for(int i = 0;i<3;i++){
+            if(time>30) {
+                if (Res.p1score==3) {
+                    game.batch.draw(Res.p1PointIndicator, game.gameWidth / 2 - (Res.p1PointIndicator.getWidth() / 2), game.gameHeight - 140 - (i * 100));
+                } else if(Res.p2score==3){
+                    game.batch.draw(Res.p2PointIndicator, game.gameWidth / 2 - (Res.p2PointIndicator.getWidth() / 2), game.gameHeight - 140 - (i * 100));
+                }
+            }else{
+                game.batch.draw(Res.noPointIndicator, game.gameWidth/2-(Res.noPointIndicator.getWidth()/2),game.gameHeight-140-(i*100));
+            }
+        }
+    }
+
     public void drawGameplayIndicators(){
         //draw left
         for(int i = 0;i<3;i++){
             if(i<Res.p1score){
-                game.batch.draw(Res.p1PointIndicator, game.gameWidth/2-(Res.p1PointIndicator.getWidth()/2),60+(i*100));
+                game.batch.draw(Res.p1PointIndicator, game.gameWidth / 2 - (Res.p1PointIndicator.getWidth() / 2), 60 + (i * 100));
             }else{
-                game.batch.draw(Res.noPointIndicator, game.gameWidth/2-(Res.noPointIndicator.getWidth()/2),60+(i*100));
+                game.batch.draw(Res.noPointIndicator, game.gameWidth / 2 - (Res.noPointIndicator.getWidth() / 2), 60 + (i * 100));
             }
         }
 

@@ -18,7 +18,10 @@ public class Res {
     static public Texture playButton = new Texture(Gdx.files.internal("play-button.png"));
     static public Texture optionsButton = new Texture(Gdx.files.internal("options-button.png"));
     static public Texture exitButton = new Texture(Gdx.files.internal("exit-button.png"));
+    static public Texture resumeButton = new Texture(Gdx.files.internal("resume-button.png"));
+    static public Texture mainmenuButton = new Texture(Gdx.files.internal("mainmenu-button.png"));
     static public Texture gameplayBackground = new Texture(Gdx.files.internal("gameplay-backdrop.png"));
+    static public Texture pausedBackground = new Texture(Gdx.files.internal("paused-backdrop.png"));
     static public Texture puck = new Texture(Gdx.files.internal("puck.png"));
     static public Texture pusherP1 = new Texture(Gdx.files.internal("push-p1.png"));
     static public Texture pusherP2 = new Texture(Gdx.files.internal("push-p2.png"));

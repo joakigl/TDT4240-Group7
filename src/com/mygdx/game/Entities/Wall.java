@@ -25,7 +25,7 @@ public class Wall extends Entity {
         pBody = world.createBody(bodyDef);
 
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(texture.getWidth()/game.PPM, texture.getHeight()/game.PPM); //divide by 2 if wonky?
+        shape.setAsBox(texture.getWidth()/2/game.PPM, texture.getHeight()/2/game.PPM); //divide by 2 if wonky?
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
