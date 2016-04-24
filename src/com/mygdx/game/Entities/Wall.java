@@ -6,17 +6,13 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.mygdx.game.MyGdxGame;
 
 /**
- * Created by Andreas on 16.04.2016.
+ * Created by Andreas on 23.04.2016.
  */
-public class Puck extends MovableEntity {
+public class Wall extends Entity {
 
     private MyGdxGame game;
 
-    public Puck(MyGdxGame game, int x, int y, Texture texture, double mx, double my) {
-        super(x, y, texture, mx, my);
-        this.game = game;
-    }
-    public Puck(MyGdxGame game,int x, int y, Texture texture) {
+    public Wall(MyGdxGame game, int x, int y, Texture texture) {
         super(x, y, texture);
         this.game = game;
     }
@@ -24,12 +20,12 @@ public class Puck extends MovableEntity {
     public Body pBody;
     public void createBox2DBody(World world){
         BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.DynamicBody;
+        bodyDef.type = BodyDef.BodyType.StaticBody;
         bodyDef.position.set((x + texture.getWidth()/2) / game.PPM,(y+texture.getHeight()/2)/game.PPM);
         pBody = world.createBody(bodyDef);
 
-        CircleShape shape = new CircleShape();
-        shape.setRadius(32/game.PPM);
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox(texture.getWidth()/2/game.PPM, texture.getHeight()/2/game.PPM); //divide by 2 if wonky?
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
@@ -47,5 +43,6 @@ public class Puck extends MovableEntity {
 
     @Override
     public void update() {
+
     }
 }

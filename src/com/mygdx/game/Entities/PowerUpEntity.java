@@ -1,7 +1,7 @@
 package com.mygdx.game.Entities;
 
-import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.game.PowerUps.PowerUp;
 
 /**
@@ -16,7 +16,7 @@ public class PowerUpEntity extends Entity{
     }
 
     @Override
-    public void render(Graphics g) {
+    public void render(SpriteBatch batch) {
 
     }
 

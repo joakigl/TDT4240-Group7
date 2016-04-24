@@ -1,15 +1,15 @@
 package com.mygdx.game.Entities;
 
-import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 /**
  * Created by Andreas on 16.04.2016.
  */
 public abstract class Entity {
 
-    protected double x;
-    protected double y;
+    protected float x;
+    protected float y;
     protected Texture texture;
 
     public Entity(int x, int y, Texture texture){
@@ -39,8 +39,11 @@ public abstract class Entity {
     public Texture getTexture(){
         return texture;
     }
+    public void setTexture(Texture texture) {
+        this.texture = texture;
+    }
 
-    public abstract void render(Graphics g);
+    public abstract void render(SpriteBatch batch);
     public abstract void update();
 
     public void dispose(){

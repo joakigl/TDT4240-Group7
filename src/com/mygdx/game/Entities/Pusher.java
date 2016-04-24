@@ -1,8 +1,10 @@
 package com.mygdx.game.Entities;
 
-import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.*;
+import com.mygdx.game.MyGdxGame;
 
 /**
  * Created by Andreas on 16.04.2016.
@@ -11,14 +13,37 @@ public class Pusher extends MovableEntity {
 
     private Vector2 prevPos;
 
-    public Pusher(int x, int y, Texture texture) {
+    private MyGdxGame game;
+
+    public Pusher(MyGdxGame game, int x, int y, Texture texture) {
         super(x, y, texture);
+        this.game = game;
         prevPos = new Vector2();
     }
 
-    @Override
-    public void render(Graphics g) {
+    public Body pBody;
+    public void createBox2DBody(World world){
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.type = BodyDef.BodyType.DynamicBody;
+        bodyDef.position.set((x + texture.getWidth()/2) / game.PPM,(y+texture.getHeight()/2)/game.PPM);
+        pBody = world.createBody(bodyDef);
 
+        CircleShape shape = new CircleShape();
+        shape.setRadius(64/game.PPM);
+
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = shape;
+        fixtureDef.density = 0.1f; //Don't know what density or restitution we should use
+        fixtureDef.restitution = 0.5f;
+
+        pBody.createFixture(fixtureDef);
+        shape.dispose();
+
+    }
+
+    @Override
+    public void render(SpriteBatch batch) {
+        batch.draw(texture,(pBody.getPosition().x*game.PPM)-texture.getWidth()/2,(pBody.getPosition().y*game.PPM)-texture.getHeight()/2);
     }
 
     @Override
@@ -26,8 +51,13 @@ public class Pusher extends MovableEntity {
 
     }
 
+    @Override
+    public void dispose(){
+    }
+
     public void setPrevPos(float x, float y){
         prevPos.set(x,y);
+        pBody.setTransform(x/game.PPM,y/game.PPM,0);
     }
 
     public int getPrevX(){
