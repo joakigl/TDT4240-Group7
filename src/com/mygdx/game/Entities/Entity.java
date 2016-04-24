@@ -39,6 +39,9 @@ public abstract class Entity {
     public Texture getTexture(){
         return texture;
     }
+    public void setTexture(Texture texture) {
+        this.texture = texture;
+    }
 
     public abstract void render(SpriteBatch batch);
     public abstract void update();

@@ -38,13 +38,14 @@ public class GameScreen implements Screen {
     private Button resumeButton;
     private Button mainmenuButton;
 
-
+    int buttonTouchDelay;
     //misc, for countdown, winnerscreen, etc
     int time;
     int countdown;
 
     public GameScreen(final MyGdxGame game){
         this.game = game;
+        buttonTouchDelay = 20;
 
         //gamesize and misc
         camera = new OrthographicCamera();
@@ -140,6 +141,13 @@ public class GameScreen implements Screen {
                 if(time==0){
                     countdown--;
                     if(countdown>=0){
+                        if(Res.soundsOn){
+                            if(countdown>0){
+                                Res.coundownBeep.play(0.6f);
+                            }else if(countdown==0){
+                                Res.gameStart.play(0.6f);
+                            }
+                        }
                         time=60;
                     }else{
                         gameState = 1;
@@ -154,27 +162,35 @@ public class GameScreen implements Screen {
                     gameState = 3;
                 }
 
-                p1.pBody.setLinearVelocity(new Vector2(0,0));
-                p2.pBody.setLinearVelocity(new Vector2(0,0));
-
                 for(int i = 0;i<2;i++) {
                     if(!Gdx.input.isTouched(i)) continue;
                     Vector3 touchPos = new Vector3();
                     touchPos.set(Gdx.input.getX(i), Gdx.input.getY(i), 0);
                     camera.unproject(touchPos);
                     Vector2 direction = new Vector2(touchPos.x, touchPos.y);
-                    if(touchPos.x < game.gameWidth/2){
-                        // calculte the normalized direction from the body to the touch position
-                        direction.sub(new Vector2(p1.pBody.getPosition().x*game.PPM,p1.pBody.getPosition().y*game.PPM));
+                    // calculte the normalized direction from the body to the touch position
+                    if(touchPos.x < (game.gameWidth/2)-50){
+
+                        Vector2 bodyPos = new Vector2(p1.pBody.getPosition().x*game.PPM,p1.pBody.getPosition().y*game.PPM);
+                        direction.sub(bodyPos);
+                        float speed = direction.len();
                         direction.nor();
-                        float speed = 10;
-                        p1.pBody.setLinearVelocity(direction.scl(speed));
+                        if(speed >=50) {
+                            p1.pBody.setLinearVelocity(direction.scl(50));
+                        }else if(speed<50){
+                            p1.pBody.setLinearVelocity(direction.scl(speed * 0.8f));
+                        }
                     }
-                    if(touchPos.x > game.gameWidth/2){
-                        direction.sub(new Vector2(p2.pBody.getPosition().x*game.PPM,p2.pBody.getPosition().y*game.PPM));
+                    if(touchPos.x > (game.gameWidth/2)+50){
+                        Vector2 bodyPos=new Vector2(p2.pBody.getPosition().x*game.PPM,p2.pBody.getPosition().y*game.PPM);
+                        direction.sub(bodyPos);
+                        float speed = direction.len();
                         direction.nor();
-                        float speed = 10;
-                        p2.pBody.setLinearVelocity(direction.scl(speed));
+                        if(speed >= 50) {
+                            p2.pBody.setLinearVelocity(direction.scl(50));
+                        }else if(speed<50){
+                            p2.pBody.setLinearVelocity(direction.scl(speed * 0.8f));
+                        }
                     }
                 }
                 if(puck.pBody.getPosition().x*game.PPM < -10){
@@ -183,12 +199,18 @@ public class GameScreen implements Screen {
                     puck = new Puck(game, game.gameWidth/2-(Res.puck.getWidth()/2),game.gameHeight/2-(Res.puck.getHeight()/2),Res.puck);
                     puck.createBox2DBody(world);
                     puck.pBody.setLinearVelocity(-0.8f, 0);
+                    if(Res.soundsOn){
+                        Res.scoreSound.play(0.6f);
+                    }
                 }else if(puck.pBody.getPosition().x*game.PPM > game.gameWidth+10){
                     Res.p1score+=1;
                     world.destroyBody(puck.pBody);
                     puck = new Puck(game, game.gameWidth/2-(Res.puck.getWidth()/2),game.gameHeight/2-(Res.puck.getHeight()/2),Res.puck);
                     puck.createBox2DBody(world);
                     puck.pBody.setLinearVelocity(0.8f,0);
+                    if(Res.soundsOn){
+                        Res.scoreSound.play(0.6f);
+                    }
                 }
                 if(Res.p1score == 3 || Res.p2score == 3){
                     gameState = 2;
@@ -200,6 +222,9 @@ public class GameScreen implements Screen {
                             public void beginContact(Contact contact) {
                                 if(contact.getFixtureA().getBody() == puck.pBody || contact.getFixtureB().getBody() == puck.pBody){
                                     //put audio here for puck collision sounds
+                                    if(Res.soundsOn){
+                                        Res.puckHit.play(0.6f);
+                                    }
                                 }
                             }
 
@@ -221,6 +246,9 @@ public class GameScreen implements Screen {
                 );
 
                 world.step(1/60f, 6,2);
+
+                p1.pBody.setLinearVelocity(new Vector2(0,0));
+                p2.pBody.setLinearVelocity(new Vector2(0,0));
                 break;
             case 2: //winner
                 time--;
@@ -238,12 +266,16 @@ public class GameScreen implements Screen {
                 }
                 break;
             case 3: //pause
+                if(buttonTouchDelay>0){
+                    buttonTouchDelay--;
+                }
                 if(Gdx.input.isTouched()){
                     Vector3 touchPos = new Vector3();
                     touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
                     camera.unproject(touchPos);
                     if(resumeButton.pointOnButton(touchPos)){
                         gameState = 1;
+                        buttonTouchDelay=20;
                     }else if(mainmenuButton.pointOnButton(touchPos)){
                         game.setScreen(new MainMenu(game));
                         dispose();

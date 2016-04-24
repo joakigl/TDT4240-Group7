@@ -1,6 +1,7 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 
 /**
@@ -20,6 +21,8 @@ public class Res {
     static public Texture exitButton = new Texture(Gdx.files.internal("exit-button.png"));
     static public Texture resumeButton = new Texture(Gdx.files.internal("resume-button.png"));
     static public Texture mainmenuButton = new Texture(Gdx.files.internal("mainmenu-button.png"));
+    static public Texture soundisonButton = new Texture(Gdx.files.internal("soundison-button.png"));
+    static public Texture soundisoffButton = new Texture(Gdx.files.internal("soundisoff-button.png"));
     static public Texture gameplayBackground = new Texture(Gdx.files.internal("gameplay-backdrop.png"));
     static public Texture pausedBackground = new Texture(Gdx.files.internal("paused-backdrop.png"));
     static public Texture puck = new Texture(Gdx.files.internal("puck.png"));
@@ -33,7 +36,18 @@ public class Res {
     static public Texture p1PointIndicator = new Texture(Gdx.files.internal("redpoint-indicator.png"));
     static public Texture p2PointIndicator = new Texture(Gdx.files.internal("bluepoint-indicator.png"));
 
+    //Sounds
+    static public Sound puckHit = Gdx.audio.newSound(Gdx.files.internal("sounds/puck-hit.wav"));
+    static public Sound coundownBeep = Gdx.audio.newSound(Gdx.files.internal("sounds/countdown.wav"));
+    static public Sound gameStart = Gdx.audio.newSound(Gdx.files.internal("sounds/gamestart.wav"));
+    static public Sound scoreSound = Gdx.audio.newSound(Gdx.files.internal("sounds/score-sound.wav"));
+    static public Sound buttonPress = Gdx.audio.newSound(Gdx.files.internal("sounds/button-press.wav"));
+
     //Scores
     static public int p1score = 0;
     static public int p2score = 0;
+
+    //Options
+    static public boolean soundsOn = true;
+    static public boolean musicOn = true; //Not used
 }

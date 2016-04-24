@@ -22,8 +22,11 @@ public class MainMenu implements Screen {
     private Button playButton;
     private Button optionsButton;
 
+    int buttonTouchDelay;
+
     public MainMenu(final MyGdxGame game){
         this.game = game;
+        buttonTouchDelay = 20;
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 1280,720);
@@ -43,6 +46,9 @@ public class MainMenu implements Screen {
 
     @Override
     public void render(float delta) {
+        if(buttonTouchDelay>0){
+            buttonTouchDelay--;
+        }
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(Gdx.gl20.GL_COLOR_BUFFER_BIT);
         camera.update();
@@ -54,12 +60,21 @@ public class MainMenu implements Screen {
         game.batch.draw(optionsButton.getTexture(),optionsButton.getX(),optionsButton.getY());
         game.batch.end();
 
-        if(Gdx.input.isTouched()){
+        if(Gdx.input.isTouched() && buttonTouchDelay == 0){
             Vector3 touchPos = new Vector3();
             touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
             camera.unproject(touchPos);
             if(playButton.pointOnButton(touchPos)){
+                if(Res.soundsOn) {
+                    Res.buttonPress.play(0.6f);
+                }
                 game.setScreen(new GameScreen(game));
+                dispose();
+            }else if(optionsButton.pointOnButton(touchPos)){
+                if(Res.soundsOn) {
+                    Res.buttonPress.play(0.6f);
+                }
+                game.setScreen(new OptionScreen(game));
                 dispose();
             }
         }
